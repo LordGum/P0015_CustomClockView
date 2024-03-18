@@ -3,6 +3,5 @@
     <declare-styleable name="CustomClockView">
         <attr name="mainColor" format="color"/>
         <attr name="centerColor" format="color"/>
-        <attr name="containerColor" format="color"/>
     </declare-styleable>
 </resources>
