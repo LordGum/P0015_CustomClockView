@@ -33,6 +33,7 @@ class CustomClockView  @JvmOverloads constructor(
         color = mainColor
     }
 
+
     init {
         setupAttrs(attrs)
     }
@@ -57,6 +58,7 @@ class CustomClockView  @JvmOverloads constructor(
         canvas.apply {
             setBackgroundColor(centerColor)
             drawClockRound()
+            drawCenter()
         }
     }
 
@@ -79,5 +81,16 @@ class CustomClockView  @JvmOverloads constructor(
             paintClock
         )
     }
+
+    private fun Canvas.drawCenter() {
+        paintClock.style = Paint.Style.FILL
+        drawCircle(
+            radius,
+            radius,
+            10f,
+            paintClock
+        )
+    }
+
 
 }
