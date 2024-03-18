@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
@@ -64,6 +65,12 @@ class CustomClockView  @JvmOverloads constructor(
             drawCenter()
             drawNumbers()
             drawDots()
+
+            drawArrow(
+                time = (1 % 12 + 45 / 60f) * 5.0,
+                sizeL = 0.4f
+            )
+
         }
     }
 
@@ -120,4 +127,50 @@ class CustomClockView  @JvmOverloads constructor(
         }
     }
 
+
+    private val painterArrows = Paint().apply {
+        style = Paint.Style.FILL
+        color = mainColor
+    }
+
+    private fun Canvas.drawArrow(time: Double, sizeL: Float) {
+        val angle = Math.PI * time / 30 - Math.PI / 2
+
+        val leftPoint = ArrowData(
+            radius + (cos(angle) - Math.PI).toFloat() * radius * 0.01f,
+            radius + (sin(angle) - Math.PI).toFloat() * radius * 0.01f
+        )
+        val rightPoint = ArrowData(
+            radius + (cos(angle) + Math.PI).toFloat() * radius * 0.01f,
+            radius + (sin(angle) + Math.PI).toFloat() * radius * 0.01f
+        )
+        val topPoint = ArrowData(
+            radius + cos(angle).toFloat() * radius * sizeL,
+            radius + sin(angle).toFloat() * radius * sizeL
+        )
+        val bottomPoint = ArrowData(
+            radius + (cos(angle) - Math.PI).toFloat() * radius * 0.01f,
+            radius + (sin(angle) + Math.PI).toFloat() * radius * 0.01f
+        )
+
+        val path = Path()
+        path.reset()
+
+        with(path) {
+            moveTo(rightPoint.x, rightPoint.y)
+            lineTo(bottomPoint.x, bottomPoint.y)
+            lineTo(leftPoint.x, leftPoint.y)
+            lineTo(topPoint.x, topPoint.y)
+        }
+
+        this.drawPath(path, painterArrows)
+    }
+
+
+
 }
+
+private data class ArrowData(
+    val x: Float,
+    val y: Float
+)
