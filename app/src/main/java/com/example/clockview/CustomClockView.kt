@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.cos
+import kotlin.math.sin
 
 class CustomClockView  @JvmOverloads constructor(
     context: Context,
@@ -14,13 +17,14 @@ class CustomClockView  @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr)  {
 
     companion object {
-        private const val STROKE_WIDTH = 5f
+        private const val STROKE_WIDTH = 15f
 
         private const val DEFAULT_MAIN_COLOR = Color.BLACK
         private const val DEFAULT_CENTER_COLOR = Color.WHITE
         private const val DEFAULT_CONTAINER_COLOR = Color.GRAY
     }
     private var radius = 0f
+    private val rect = Rect()
 
     private var mainColor = DEFAULT_MAIN_COLOR
     private var centerColor = DEFAULT_CENTER_COLOR
@@ -33,8 +37,7 @@ class CustomClockView  @JvmOverloads constructor(
         color = mainColor
     }
 
-
-    init {
+        init {
         setupAttrs(attrs)
     }
 
@@ -59,6 +62,8 @@ class CustomClockView  @JvmOverloads constructor(
             setBackgroundColor(centerColor)
             drawClockRound()
             drawCenter()
+            drawNumbers()
+            drawDots()
         }
     }
 
@@ -92,5 +97,27 @@ class CustomClockView  @JvmOverloads constructor(
         )
     }
 
+    private fun Canvas.drawNumbers() {
+        paintClock.textSize = radius / 100 * 20f
+        for (num in 1..12) {
+            val number = num.toString()
+            paintClock.getTextBounds(number, 0, number.length, rect)
+            val angle = Math.PI / 6 * (num - 3)
+            val x = radius - rect.width() / 2 + 0.73 * cos(angle) * radius
+            val y = radius + rect.height() / 2 + 0.73 * sin(angle) * radius
+            drawText(number, x.toFloat(), y.toFloat(), paintClock)
+        }
+    }
+
+    private fun Canvas.drawDots() {
+        for (dot in 1..60) {
+            val dotText = "."
+            paintClock.getTextBounds(dotText, 0, dotText.length, rect)
+            val angle = Math.PI / 30 * (dot)
+            val x = radius - rect.width() / 2 +  0.85 * cos(angle) * radius
+            val y = radius + rect.height() / 2 +  0.85 * sin(angle) * radius
+            drawText(dotText, x.toFloat(), y.toFloat(), paintClock)
+        }
+    }
 
 }
